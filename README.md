@@ -52,22 +52,26 @@ Agent profiles define roles, not models. Swap in a new model for a specific work
 
 ### Agent Hierarchy
 
-Four layers. Each layer has a single, clear responsibility. Information flows down as instructions and up as results.
+Four layers. Each layer has a single, clear responsibility. Information flows down as instructions and up as results. Main supervises one or more project Managers, each running their own sprint queue independently.
 
 ```mermaid
 graph TD
-    H["👤 Human"] -->|"MISSION.md\nvalidation-criteria.md"| M
+    H["👤 Human"] -->|"MISSION.md\nvalidation-criteria.md\n(per project)"| M
 
     subgraph "auto-dev pipeline"
-        M["🔵 Main Agent\n━━━━━━━━━━━━━━━\nPipeline Architect\n• Selects & creates sprints\n• Tunes agent profiles\n• Reassigns models\n• Evolves the system"]
+        M["🔵 Main Agent\n━━━━━━━━━━━━━━━\nPipeline Architect\n• Selects & creates sprints\n• Tunes agent profiles\n• Reassigns models\n• Evolves the system\n• Supervises all projects"]
 
-        M -->|"sprint plan +\nvalidation strategy"| MGR
+        M -->|"sprint plan +\nvalidation strategy"| MGR1
+        M -->|"sprint plan +\nvalidation strategy"| MGR2
 
-        MGR["🟢 Manager Agent\n━━━━━━━━━━━━━━━\nProject Driver\n• Contextualizes sprints\n• Reviews output\n• Manages queue\n• Runs validation cascade"]
+        MGR1["🟢 Manager Agent\n━━━━━━━━━━━━━━━\nProject A Driver\n• Own SPRINT_QUEUE.md\n• Own validation cascade\n• Own state files"]
 
-        MGR -->|"contextualized\nsprint"| O
+        MGR2["🟢 Manager Agent\n━━━━━━━━━━━━━━━\nProject B Driver\n• Own SPRINT_QUEUE.md\n• Own validation cascade\n• Own state files"]
 
-        O["🟡 Orchestrator Agent\n━━━━━━━━━━━━━━━\nSequence Executor\n• Chains task outputs\n• Dispatches to workers\n• Manages retries\n• Returns results"]
+        MGR1 -->|"contextualized\nsprint"| O
+        MGR2 -->|"contextualized\nsprint"| O
+
+        O["🟡 Orchestrators\n━━━━━━━━━━━━━━━\n• orch-execution: build features\n• orch-discovery: research & audit\n• orch-backlog: queue management"]
 
         O -->|"task + context"| W
 
@@ -75,15 +79,37 @@ graph TD
     end
 
     W -->|"task output\n+ evidence"| O
-    O -->|"completed sprint\n+ verification"| MGR
-    MGR -->|"escalations +\nperformance data"| M
+    O -->|"completed sprint\n+ verification"| MGR1
+    O -->|"completed sprint\n+ verification"| MGR2
+    MGR1 -->|"escalations +\nperformance data"| M
+    MGR2 -->|"escalations +\nperformance data"| M
 
     style M fill:#1e3a5f,stroke:#4a9eff,color:#fff
-    style MGR fill:#1a4a2a,stroke:#4aff7f,color:#fff
+    style MGR1 fill:#1a4a2a,stroke:#4aff7f,color:#fff
+    style MGR2 fill:#1a4a2a,stroke:#4aff7f,color:#fff
     style O fill:#4a3a1a,stroke:#ffcc4a,color:#fff
     style W fill:#3a3a3a,stroke:#aaa,color:#fff
     style H fill:#555,stroke:#aaa,color:#fff
 ```
+
+### Multi-Project Operation
+
+Main can supervise multiple projects concurrently. Each project gets its own Manager with its own `project/` and `state/` directories. The pipeline files (`agents/`, `sprints/`, `validation/`, `intelligence/`) are shared across all projects — improvements Main makes benefit every project.
+
+```
+workspace/
+├── auto-dev/                  ← shared pipeline (this repo)
+├── project-alpha/             ← project A
+│   ├── project/MISSION.md
+│   ├── state/SPRINT_QUEUE.md
+│   └── src/...
+├── project-beta/              ← project B
+│   ├── project/MISSION.md
+│   ├── state/SPRINT_QUEUE.md
+│   └── src/...
+```
+
+Each Manager runs independently — different projects can be at different stages, running different sprint types, at different velocities. Main observes all of them, and patterns detected in one project's metrics can lead to pipeline improvements that help all projects.
 
 ### What Each Agent Owns
 
@@ -523,7 +549,7 @@ Works with any agentic harness: Claude Code, Cursor, Cline, OpenClaw, Aider, or 
 | `feature-dev` | Scope & acceptance | architect → qa-engineer → coder → reviewer | Adding new functionality |
 | `bug-fix` | Reproduction | qa-engineer → reviewer → coder | Fixing a reported bug |
 | `refactor` | Scope definition | architect → qa-engineer → coder | Improving code without behavior change |
-| `design-audition` | Requirements | architect → ui-designer → reviewer → writer | Exploring UI directions |
+| `design-audition` | Requirements | architect → ui-designer (multi-model) → reviewer → writer | Exploring UI directions via model competition |
 | `api-integration` | API research | researcher → architect → coder → qa-engineer | Connecting to external services |
 | `testing-harness` | Assessment | researcher → coder → qa-engineer | Setting up test infrastructure |
 | `documentation` | Audit | researcher → writer → reviewer | Creating/updating docs |
@@ -534,7 +560,22 @@ Works with any agentic harness: Claude Code, Cursor, Cline, OpenClaw, Aider, or 
 | `accessibility` | Audit | qa-engineer → coder | WCAG compliance |
 | `database-migration` | Migration design | architect → coder → qa-engineer | Schema changes |
 
-### Validation Sprints
+### Validation Cascade (V1–V4)
+
+Every completed sprint passes through a tiered validation cascade. Each tier increases in scope and cost. A sprint only advances if the previous tier passes.
+
+| Tier | Name | What It Checks | Model Tier |
+|------|------|---------------|------------|
+| **V1** | Unit | Tests pass, lint clean, types check, build succeeds | Fast/cheap (Scout, Sprinter) |
+| **V2** | Integration | Services connect, APIs respond, data flows end-to-end | Mid-tier (Sprinter, Haiku) |
+| **V3** | Review | Code quality, security, patterns, acceptance criteria | Strong reasoning (Lieutenant) |
+| **V4** | Strategic | Mission alignment, regression risk, architectural fit, UX coherence | Strongest available (Strategist) |
+
+V1–V2 are mandatory for every code-touching sprint. V3 is mandatory for feature-dev, refactor, and security work. V4 runs at milestones and pre-release.
+
+### Validation Sprints (Project-Level)
+
+In addition to the per-sprint cascade, these validation sprints run at project milestones:
 
 | Sprint | What It Checks | Triggered By | Generates |
 |--------|---------------|-------------|-----------|

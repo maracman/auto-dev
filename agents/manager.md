@@ -57,18 +57,40 @@ suffixed (e.g., `sprint-012-interior-3` for the third interior iteration). The
 `notes` column should state "interior validation loop: iteration N of M". This
 makes interior loops visible to Main for pattern analysis.
 
-### 5. Queue Management
-- After each sprint completes, assess: does the output reveal new work?
+### 5. Validation Cascade (V1–V4)
+
+Every completed sprint passes through a tiered validation cascade before it is
+accepted. Each tier increases in scope and cost. A sprint only advances to the
+next tier if the previous tier passes.
+
+| Tier | Name | What It Checks | Speed | Model Tier |
+|------|------|---------------|-------|------------|
+| **V1** | Unit | Fast local checks — tests pass, lint clean, types check, build succeeds | Seconds | Fast/cheap (e.g., Gemini Flash, DeepSeek) |
+| **V2** | Integration | Environment checks — services connect, APIs respond, data flows end-to-end | Minutes | Mid-tier (e.g., Gemini Flash, Claude Haiku) |
+| **V3** | Review | Code review panel — quality, security, patterns, acceptance criteria | Minutes | Strong reasoning (e.g., Claude Sonnet, GPT-5) |
+| **V4** | Strategic | Mission alignment, regression risk, architectural fit, UX coherence | Minutes | Strongest available (e.g., Claude Sonnet, GPT-5) |
+
+**Cascade rules:**
+- V1 and V2 are mandatory for every sprint that touches code.
+- V3 is mandatory for feature-dev, refactor, and security-audit sprints.
+- V4 runs at project milestones, pre-release, or when Main's validation strategy requires it.
+- A failure at any tier generates remediation tasks and re-enters the dev loop.
+- The Manager logs each tier's result to `state/VALIDATION_LOG.md`.
+
+### 6. Queue Management
+- After each sprint completes and passes its required validation tiers, assess:
+  does the output reveal new work?
 - Add new tasks to the queue as needed.
-- When the dev sprint queue is empty, deploy the relevant validation sprints
-  from `validation/` using `project/validation-criteria.md` as the pass/fail
-  thresholds.
+- When the dev sprint queue is empty, deploy any remaining project-level validation
+  sprints from `validation/` (e.g., `board-of-examiners`, `mission-alignment`)
+  using `project/validation-criteria.md` as the pass/fail thresholds.
 - Validation sprints that fail generate new dev sprint items — the cycle continues.
 
-### 6. Completion
+### 7. Completion
 The project is complete when:
 - All dev sprints are done.
-- All relevant validation sprints pass their project-specific criteria.
+- All sprints have passed their required validation cascade tiers.
+- Project-level validation sprints pass their project-specific criteria.
 - `state/PROJECT_STATE.md` reflects a coherent, verified final state.
 
 ## Escalation Report Format

@@ -28,25 +28,56 @@ Rating scale: strong | adequate | weak | untested
 
 ## Model Roster
 
-> Fill in with your available models. Example entries below.
+> Fill in with your available models. Below are example entries from a real
+> deployment. Replace or extend with your own models and observed ratings.
+> Main updates this roster as it observes performance and new models become
+> available. Aliases make sprint templates and agent profiles readable without
+> coupling to specific model strings.
 
-### {model-alias-1}
-- **Provider:** {provider}
-- **Canonical:** {model-string}
-- **Strengths:** {competencies rated "strong"}
-- **Weaknesses:** {competencies rated "weak"}
-- **Default assignment:** {which worker role(s)}
-- **Cost tier:** low | medium | high
-- **Context window:** {tokens}
+### Surgeon
+- **Provider:** OpenAI
+- **Canonical:** `openai-codex/gpt-5.3-codex`
+- **Strengths:** code generation (strong), instruction following (strong)
+- **Weaknesses:** prose/documentation (weak), research (weak)
+- **Default assignment:** coder (scaffolding, feature implementation)
+- **Cost tier:** medium
+- **Context window:** 128k
 
-### {model-alias-2}
-- **Provider:** {provider}
-- **Canonical:** {model-string}
-- **Strengths:** {list}
-- **Weaknesses:** {list}
-- **Default assignment:** {role(s)}
-- **Cost tier:** {tier}
-- **Context window:** {tokens}
+### Sprinter
+- **Provider:** Google (via OpenRouter)
+- **Canonical:** `openrouter/google/gemini-3-flash-preview`
+- **Strengths:** speed (strong), long context (strong), research (adequate)
+- **Weaknesses:** reasoning/planning (adequate), code review (weak)
+- **Default assignment:** researcher, writer, unit test generation, orchestrator
+- **Cost tier:** low
+- **Context window:** 1M
+
+### Lieutenant
+- **Provider:** Anthropic
+- **Canonical:** `anthropic/claude-sonnet-4-6`
+- **Strengths:** reasoning/planning (strong), code review (strong), instruction following (strong)
+- **Weaknesses:** speed (adequate)
+- **Default assignment:** architect, reviewer, V3/V4 validation, manager
+- **Cost tier:** medium
+- **Context window:** 200k
+
+### Scout
+- **Provider:** DeepSeek (via OpenRouter)
+- **Canonical:** `openrouter/deepseek/deepseek-chat`
+- **Strengths:** code generation (strong), refactoring (strong), speed (strong)
+- **Weaknesses:** vision/UI (weak), long-form prose (adequate)
+- **Default assignment:** coder (refactoring), V1 validation
+- **Cost tier:** low
+- **Context window:** 128k
+
+### Strategist
+- **Provider:** OpenAI
+- **Canonical:** `openai/gpt-5.4`
+- **Strengths:** reasoning/planning (strong), vision/UI (strong), prose (strong)
+- **Weaknesses:** speed (adequate)
+- **Default assignment:** V4 strategic validation, design auditions, ui-designer
+- **Cost tier:** high
+- **Context window:** 128k
 
 ## Assignment Rules
 

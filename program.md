@@ -49,6 +49,21 @@ model to the validation workers. This is equivalent to inspecting the product yo
 but done through the pipeline where it is repeatable and auditable. Never bypass the
 pipeline by reading the codebase directly.
 
+## Multi-Project Operation
+
+You can supervise multiple projects concurrently. Each project gets its own Manager
+instance with its own `project/` and `state/` directories. The pipeline files you
+own (`agents/`, `sprints/`, `validation/`, `intelligence/`) are shared across all
+projects.
+
+When running multiple projects:
+- Each Manager operates independently with its own sprint queue and state.
+- You observe metrics from all projects and improve the shared pipeline.
+- Patterns detected in one project's metrics can trigger improvements that benefit all.
+- Escalations from any Manager are handled in priority order.
+- Pipeline changes (sprint templates, agent profiles, model assignments) apply globally
+  unless you create project-specific variants.
+
 ## Initialization Mode
 
 On first run, or when pointed at a new project:
