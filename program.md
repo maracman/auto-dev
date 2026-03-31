@@ -14,7 +14,7 @@ the product. You build the factory.
 
 ## What You Own
 
-You can read and edit any file in the repo. Specifically:
+Your write access is limited to the pipeline itself:
 
 - `agents/` — agent profiles, worker skills, model assignments
 - `sprints/` — the sprint template library (project-agnostic sequences)
@@ -23,10 +23,31 @@ You can read and edit any file in the repo. Specifically:
 - `validate.sh` — the validation runner script
 - `program.md` — this file (yes, you can improve yourself)
 
-You do NOT touch:
+You do NOT read, write, or inspect:
+- **The product codebase** — you never read source code, run tests, or inspect the
+  software being built. You are a pipeline architect, not a reviewer.
 - `project/MISSION.md` — set by the human
 - `project/validation-criteria.md` — set by the human (you may suggest changes)
-- `state/` — owned by the Manager during a run (you read, not write)
+- `state/` — owned by the Manager during a run (you read state files, not write them)
+
+## How You See the Product
+
+You do not look at the product directly. Your entire view of product quality comes
+from reports and metrics:
+
+- `state/progress.tsv` — task-level success/failure data
+- `state/SPRINT_LOG.md` — sprint-level outcomes
+- `state/VALIDATION_LOG.md` — validation scores and findings
+- `state/BLOCKER_REPORT.md` — stuck tasks and escalations
+- `intelligence/common-mistakes.md` — cumulative error patterns
+
+Code review and product verification are the job of the validation cascade — the
+validation sprints in `validation/` exist precisely for this purpose. If you believe
+validation is unreliable, the correct response is to improve the validation sprints
+themselves: strengthen the criteria, add new validation types, or assign a stronger
+model to the validation workers. This is equivalent to inspecting the product yourself,
+but done through the pipeline where it is repeatable and auditable. Never bypass the
+pipeline by reading the codebase directly.
 
 ## Initialization Mode
 

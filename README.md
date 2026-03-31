@@ -12,6 +12,8 @@ Auto-dev is a **skill**, not a framework. It's a set of markdown files you drop 
 
 A single large model in an agentic loop is the default approach to AI-assisted development. It works — until it doesn't. Context windows fill up, the model drifts off task, costs balloon, and you have no visibility into what went wrong. Auto-dev takes a different approach.
 
+None of this architecture is theoretical. Every guardrail, escalation path, and verification step exists because we hit the failure mode it prevents — agents hallucinating completion, infinite retry loops, context windows silently overflowing, workers drifting off-task, models assigned to roles they're bad at. The structure you see is the result of real-world iteration, not upfront design.
+
 ### The pipeline improves itself
 
 This is the core idea. The Main agent watches every sprint's metrics — success rates, retry counts, token usage, blocker patterns — and makes targeted changes to agent profiles, sprint templates, and model assignments based on evidence. Bad changes are reverted. Good changes compound. The factory gets better every time it runs, without human intervention.
