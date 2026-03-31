@@ -1,0 +1,1 @@
+timestamp	sprint_id	sprint_type	task_num	task_name	worker	model	attempt	result	tests_before	tests_after	lint_before	lint_after	tokens_in	tokens_out	duration_s	validation_verdict	pipeline_version	template_version	notes

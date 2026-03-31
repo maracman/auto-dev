@@ -1,0 +1,16 @@
+# Runtime artifacts
+.auto-dev-results/
+design/
+
+# Project-specific env
+.auto-dev.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
