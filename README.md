@@ -8,6 +8,44 @@ Auto-dev is a **skill**, not a framework. It's a set of markdown files you drop 
 
 ---
 
+## Why auto-dev?
+
+A single large model in an agentic loop is the default approach to AI-assisted development. It works — until it doesn't. Context windows fill up, the model drifts off task, costs balloon, and you have no visibility into what went wrong. Auto-dev takes a different approach.
+
+### The pipeline improves itself
+
+This is the core idea. The Main agent watches every sprint's metrics — success rates, retry counts, token usage, blocker patterns — and makes targeted changes to agent profiles, sprint templates, and model assignments based on evidence. Bad changes are reverted. Good changes compound. The factory gets better every time it runs, without human intervention.
+
+### Smaller models, used where they're strongest
+
+You don't need a frontier model for every task. A researcher needs broad knowledge. A coder needs precise syntax. A reviewer needs critical reasoning. Auto-dev assigns each worker the model best suited to its role, exploiting the specialized strengths of smaller, cheaper models rather than paying for one large model to do everything adequately.
+
+### Agents only see what they need
+
+Each worker receives only the context relevant to its task — not the full codebase, not the conversation history, not every prior decision. This keeps agents focused and accurate, avoids context window pollution, and means the framework works regardless of model context window size.
+
+### Agents stay on track
+
+Structured sprints with defined inputs, outputs, and verification steps prevent the drift that plagues long-running single-agent sessions. Each task has a clear scope, a specific worker, and an evidence-based acceptance check. Three strikes and a task escalates — no infinite loops.
+
+### Projects break into manageable chunks
+
+Instead of asking one model to hold an entire project in its head, auto-dev decomposes work into sprints and tasks that each fit comfortably within a single agent's capabilities. The Orchestrator chains outputs between tasks, so context flows through the pipeline without any one agent needing to hold it all.
+
+### Cost scales with complexity, not with context
+
+Smaller models cost less per token. Short, focused contexts mean fewer tokens per call. Parallel workers don't duplicate each other's context. The result: total cost can be a fraction of running a frontier model in a long-running agentic loop, especially for larger projects.
+
+### Every decision is auditable
+
+Progress metrics, sprint logs, blocker reports, validation scores — everything is written to files you can read. When something goes wrong, you can trace exactly which agent, model, sprint, and task was responsible. Single-agent loops give you a chat transcript; auto-dev gives you an audit trail.
+
+### Mix and match models and providers
+
+Agent profiles define roles, not models. Swap in a new model for a specific worker and measure whether it improves results. Run your researcher on one provider and your coder on another. The pipeline's versioned metrics make model comparisons empirical, not anecdotal.
+
+---
+
 ## Architecture
 
 ### Agent Hierarchy
